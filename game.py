@@ -1,8 +1,14 @@
 
 import curses
+import random
 from piece import Piece
 from pa import PA
 from pb import PB
+from pc import PC
+from pd import PD
+from pe import PE
+from pf import PF
+from pg import PG
 
 class Game:
 	def __init__(self, screen):
@@ -12,7 +18,7 @@ class Game:
 		self.field = curses.newwin(self.height, self.width, 0, 0)
 		self.field.box()
 		self.c = 0
-		self.current = PA(10, 0)
+		self.current = self.createNext()
 		self.mat = []
 		for i in range(0, self.width):
 			row = []
@@ -32,8 +38,24 @@ class Game:
 		else:
 			for p in self.current.pieces:
 				self.mat[p.x][p.y] = p
-			self.current = PA(10, 1)
-			#self.current = PB(10, 1)
+			self.current = self.createNext()
+
+	def createNext(self):
+		i = random.randint(0, 6)
+		if i == 0:
+			return PA(10, 1)
+		elif i == 1:
+			return PB(10, 1)
+		elif i == 2:
+			return PC(10, 1)
+		elif i == 3:
+			return PD(10, 1)
+		elif i == 4:
+			return PE(10, 1)
+		elif i == 5:
+			return PF(10, 1)
+		else:
+			return PG(10, 1)
 
 	def paint(self):
 		self.field.clear()
