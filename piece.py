@@ -1,7 +1,6 @@
 
 class Piece:
-	def __init__(self):
-		self.pos = 0
+	def __init__(self, x, y):
+		self.x = x
+		self.y = y
 
-	def pos(self):
-		return self.pos

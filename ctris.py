@@ -53,6 +53,15 @@ while True:
 		break
 	elif c == ord("s"):
 		mode = 1
+	elif c == curses.KEY_LEFT:
+		game.tryMoveLeft()
+		game.paint()
+	elif c == curses.KEY_RIGHT:
+		game.tryMoveRight()
+		game.paint()
+	elif c == curses.KEY_DOWN:
+		game.tryMoveDown()
+		game.paint()
 
 curses.nocbreak()
 stdscr.keypad(0)
