@@ -62,6 +62,9 @@ while True:
 	elif c == curses.KEY_DOWN:
 		game.tryMoveDown()
 		game.paint()
+	elif c == curses.KEY_UP:
+		game.tryTurn()
+		game.paint()
 
 curses.nocbreak()
 stdscr.keypad(0)

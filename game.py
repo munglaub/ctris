@@ -14,7 +14,7 @@ class Game:
 	def __init__(self, screen):
 		self.screen = screen
 		self.height = 40
-		self.width = 40
+		self.width = 38
 		self.field = curses.newwin(self.height, self.width, 0, 0)
 		self.field.box()
 		self.c = 0
@@ -78,6 +78,19 @@ class Game:
 			return False
 		return True
 
+
+	def tryTurn(self):
+		if self.canTurn():
+			self.turn()
+
+	def canTurn(self):
+		for p in self.current.getTurned():
+			if not self.check(p.x, p.y):
+				return False
+		return True
+
+	def turn(self):
+		self.current.turn()
 
 	def tryMoveDown(self):
 		if self.canMoveDown():
