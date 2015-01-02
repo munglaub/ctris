@@ -15,16 +15,12 @@ class Game:
 		self.screen = screen
 		self.height = 40
 		self.width = 38
+		self.maxPiecesPerLine = int((self.width - 4)/2)
 		self.field = curses.newwin(self.height, self.width, 0, 0)
 		self.field.box()
 		self.c = 0
 		self.current = self.createNext()
-		self.mat = []
-		for i in range(0, self.width):
-			row = []
-			for j in range(0, self.height):
-				row.append(None)
-			self.mat.append(row)
+		self.pieces = []
 
 	def initialize(self):
 		self.field.clear()
@@ -36,8 +32,7 @@ class Game:
 		if self.canMoveDown():
 			self.moveDown()
 		else:
-			for p in self.current.pieces:
-				self.mat[p.x][p.y] = p
+			self.pieces += self.current.pieces
 			self.current = self.createNext()
 		self.checkLines()
 
@@ -64,10 +59,9 @@ class Game:
 		self.field.addstr(1, 1, str(self.c))
 		for p in self.current.pieces:
 			self.field.addstr(p.y, p.x, "  ", curses.A_REVERSE)
-		for row in self.mat:
-			for p in row:
-				if p != None:
-					self.field.addstr(p.y, p.x, "  ", curses.A_REVERSE)
+		for p in self.pieces:
+			if p != None:
+				self.field.addstr(p.y, p.x, "  ", curses.A_REVERSE)
 		self.field.refresh()
 
 	def check(self, x, y):
@@ -75,28 +69,23 @@ class Game:
 			return False
 		if y <= 0 or y > self.height - 2:
 			return False
-		if self.mat[x][y] != None:
-			return False
+		for p in self.pieces:
+			if p.x == x and p.y == y:
+				return False
 		return True
 
 	def checkLines(self):
-		for i in reversed(range(0, self.height - 1)):
-			s = ""
-			full = True
-			for j in range(1, self.width - 2):
-				if j % 2 != 0:
-					continue
-				if self.mat[j][i] == None:
-					full = False
-			if full:
-				for j in range(0, self.width):
-					self.mat[j][i] = None
-				for ii in reversed(range(1, i+1)):
-					for j in range(0, self.width):
-						p = self.mat[j][ii - 1]
-						if p != None:
-							self.mat[j][ii] = Piece(p.x, p.y + 1)
-						self.mat[j][ii - 1] = None
+		for row in range(0, self.height):
+			rowPieces = []
+			for p in self.pieces:
+				if p.y == row:
+					rowPieces.append(p)
+			if len(rowPieces) >= self.maxPiecesPerLine:
+				for p in rowPieces:
+					self.pieces.remove(p)
+				for p in self.pieces:
+					if p.y < row:
+						p.y += 1
 
 	def fall(self):
 		while self.canMoveDown():
