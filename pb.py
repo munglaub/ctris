@@ -10,24 +10,20 @@ class PB:
 	def getTurned(self):
 		np = []
 		if self.up:
-			p = self.pieces[0]
-			np.append(Piece(p.x - 4, p.y + 2))
-			p = self.pieces[1]
-			np.append(Piece(p.x - 2, p.y + 1))
-			p = self.pieces[2]
-			np.append(Piece(p.x, p.y))
-			p = self.pieces[3]
-			np.append(Piece(p.x + 2, p.y - 1))
+			np.append(self.create(0, -4, 2))
+			np.append(self.create(1, -2, 1))
+			np.append(self.create(2, 0, 0))
+			np.append(self.create(3, 2, -1))
 		else:
-			p = self.pieces[0]
-			np.append(Piece(p.x + 4, p.y - 2))
-			p = self.pieces[1]
-			np.append(Piece(p.x + 2, p.y - 1))
-			p = self.pieces[2]
-			np.append(Piece(p.x, p.y))
-			p = self.pieces[3]
-			np.append(Piece(p.x - 2, p.y + 1))
+			np.append(self.create(0, 4, -2))
+			np.append(self.create(1, 2, -1))
+			np.append(self.create(2, 0, 0))
+			np.append(self.create(3, -2, 1))
 		return np
+
+	def create(self, i, x, y):
+		p = self.pieces[i]
+		return Piece(p.x + x, p.y + y)
 
 	def turn(self):
 		self.pieces = self.getTurned()
