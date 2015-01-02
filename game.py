@@ -9,6 +9,7 @@ from pd import PD
 from pe import PE
 from pf import PF
 from pg import PG
+from status import Status
 
 class Game:
 	def __init__(self, screen):
@@ -18,9 +19,11 @@ class Game:
 		self.maxPiecesPerLine = int((self.width - 4)/2)
 		self.field = curses.newwin(self.height, self.width, 0, 0)
 		self.field.box()
-		self.c = 0
+		self.next = self.createNext()
 		self.current = self.createNext()
 		self.pieces = []
+		self.status = Status(self.width + 2, 0)
+		self.status.nextBlock = self.next
 
 	def initialize(self):
 		self.field.clear()
@@ -28,13 +31,15 @@ class Game:
 		self.field.refresh()
 
 	def tick(self):
-		self.c += 1
 		if self.canMoveDown():
 			self.moveDown()
 		else:
 			self.pieces += self.current.pieces
-			self.current = self.createNext()
-		self.checkLines()
+			self.current = self.next
+			self.next = self.createNext()
+			self.status.nextBlock = self.next
+			self.status.blocks += 1
+		self.status.lines += self.checkLines()
 
 	def createNext(self):
 		i = random.randint(0, 6)
@@ -56,13 +61,13 @@ class Game:
 	def paint(self):
 		self.field.clear()
 		self.field.box()
-		self.field.addstr(1, 1, str(self.c))
 		for p in self.current.pieces:
 			self.field.addstr(p.y, p.x, "  ", curses.A_REVERSE)
 		for p in self.pieces:
 			if p != None:
 				self.field.addstr(p.y, p.x, "  ", curses.A_REVERSE)
 		self.field.refresh()
+		self.status.paint()
 
 	def check(self, x, y):
 		if x <= 0 or x >= self.width - 2:
@@ -75,17 +80,20 @@ class Game:
 		return True
 
 	def checkLines(self):
+		count = 0
 		for row in range(0, self.height):
 			rowPieces = []
 			for p in self.pieces:
 				if p.y == row:
 					rowPieces.append(p)
 			if len(rowPieces) >= self.maxPiecesPerLine:
+				count += 1
 				for p in rowPieces:
 					self.pieces.remove(p)
 				for p in self.pieces:
 					if p.y < row:
 						p.y += 1
+		return count
 
 	def fall(self):
 		while self.canMoveDown():
