@@ -65,6 +65,10 @@ while True:
 	elif c == curses.KEY_UP:
 		game.tryTurn()
 		game.paint()
+	elif c == ord(" "):
+		game.fall()
+		game.tick()
+		game.paint()
 
 curses.nocbreak()
 stdscr.keypad(0)

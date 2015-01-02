@@ -39,6 +39,7 @@ class Game:
 			for p in self.current.pieces:
 				self.mat[p.x][p.y] = p
 			self.current = self.createNext()
+		self.checkLines()
 
 	def createNext(self):
 		i = random.randint(0, 6)
@@ -78,6 +79,28 @@ class Game:
 			return False
 		return True
 
+	def checkLines(self):
+		for i in reversed(range(0, self.height - 1)):
+			s = ""
+			full = True
+			for j in range(1, self.width - 2):
+				if j % 2 != 0:
+					continue
+				if self.mat[j][i] == None:
+					full = False
+			if full:
+				for j in range(0, self.width):
+					self.mat[j][i] = None
+				for ii in reversed(range(1, i+1)):
+					for j in range(0, self.width):
+						p = self.mat[j][ii - 1]
+						if p != None:
+							self.mat[j][ii] = Piece(p.x, p.y + 1)
+						self.mat[j][ii - 1] = None
+
+	def fall(self):
+		while self.canMoveDown():
+			self.moveDown()
 
 	def tryTurn(self):
 		if self.canTurn():
