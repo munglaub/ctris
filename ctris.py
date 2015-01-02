@@ -7,9 +7,10 @@ from game import Game
 
 
 def update(game):
+	global mode
 	while True:
 		if mode == 1:
-			game.tick()
+			mode = game.tick()
 			game.paint()
 		time.sleep(1)
 
@@ -52,6 +53,7 @@ while True:
 	if c == ord("q"):
 		break
 	elif c == ord("s"):
+		game.initialize()
 		mode = 1
 	elif c == curses.KEY_LEFT:
 		game.tryMoveLeft()
@@ -67,7 +69,7 @@ while True:
 		game.paint()
 	elif c == ord(" "):
 		game.fall()
-		game.tick()
+		mode = game.tick()
 		game.paint()
 
 curses.nocbreak()

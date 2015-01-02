@@ -19,27 +19,32 @@ class Game:
 		self.maxPiecesPerLine = int((self.width - 4)/2)
 		self.field = curses.newwin(self.height, self.width, 0, 0)
 		self.field.box()
+
+	def initialize(self):
 		self.next = self.createNext()
 		self.current = self.createNext()
 		self.pieces = []
 		self.status = Status(self.width + 2, 0)
 		self.status.nextBlock = self.next
-
-	def initialize(self):
 		self.field.clear()
 		self.field.box()
 		self.field.refresh()
 
 	def tick(self):
+		self.status.lines += self.checkLines()
 		if self.canMoveDown():
 			self.moveDown()
+			return 1
 		else:
 			self.pieces += self.current.pieces
 			self.current = self.next
 			self.next = self.createNext()
 			self.status.nextBlock = self.next
 			self.status.blocks += 1
-		self.status.lines += self.checkLines()
+			for p in self.current.pieces:
+				if not self.check(p.x, p.y):
+					return 2
+			return 1
 
 	def createNext(self):
 		i = random.randint(0, 6)
