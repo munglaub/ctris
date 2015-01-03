@@ -74,6 +74,12 @@ class Game:
 		self.field.refresh()
 		self.status.paint()
 
+	def getLines(self):
+		return self.status.lines
+
+	def getBlocks(self):
+		return self.status.blocks
+
 	def check(self, x, y):
 		if x <= 0 or x >= self.width - 2:
 			return False

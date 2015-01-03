@@ -4,15 +4,22 @@ import curses
 import threading
 import time
 from game import Game
+from highscore import Highscore
 
 
 def update(game):
 	global mode
+	global highscore
 	while True:
-		if mode == 1:
-			mode = game.tick()
-			game.paint()
-		time.sleep(1)
+		try:
+			if mode == 1:
+				mode = game.tick()
+				game.paint()
+				if mode == 2:
+					highscore.addScore(game.getLines(), game.getBlocks())
+			time.sleep(1)
+		except:
+			pass
 
 def init_curses():
 	stdscr = curses.initscr()
@@ -35,9 +42,15 @@ def init_curses():
 
 
 stdscr = init_curses()
+# 0 - initial mode - game not started
+# 1 - game running
+# 2 - game over
+# 3 - pause/show highscore
 mode = 0
-game = Game(stdscr)
 
+highscore = Highscore()
+
+game = Game(stdscr)
 game.initialize()
 
 updateThread = threading.Thread(target=update, args=(game,))
@@ -55,22 +68,30 @@ while True:
 	elif c == ord("s"):
 		game.initialize()
 		mode = 1
-	elif c == curses.KEY_LEFT:
+	elif mode == 1 and c == curses.KEY_LEFT:
 		game.tryMoveLeft()
 		game.paint()
-	elif c == curses.KEY_RIGHT:
+	elif mode == 1 and c == curses.KEY_RIGHT:
 		game.tryMoveRight()
 		game.paint()
-	elif c == curses.KEY_DOWN:
+	elif mode == 1 and c == curses.KEY_DOWN:
 		game.tryMoveDown()
 		game.paint()
-	elif c == curses.KEY_UP:
+	elif mode == 1 and c == curses.KEY_UP:
 		game.tryTurn()
 		game.paint()
-	elif c == ord(" "):
+	elif mode == 1 and c == ord(" "):
 		game.fall()
 		mode = game.tick()
 		game.paint()
+		if mode == 2:
+			highscore.addScore(game.getLines(), game.getBlocks())
+	elif c == ord("h"):
+		if mode == 3:
+			mode = 1
+		else:
+			mode = 3
+			highscore.showHighscore()
 
 curses.nocbreak()
 stdscr.keypad(0)
