@@ -18,7 +18,7 @@ class Highscore:
 		self.win.refresh()
 
 	def addScore(self, lines, blocks):
-		conn = sqlite3.connect("/home/aloeee/progTest/python/ctris/scores.db")
+		conn = sqlite3.connect("scores.db")
 		cursor = conn.cursor()
 		cursor.execute("CREATE TABLE IF NOT EXISTS SCORES (ID INTEGER PRIMARY KEY, DATETIME TEXT, LINES INTEGER, BLOCKS INTEGER)")
 
@@ -29,7 +29,7 @@ class Highscore:
 		conn.close()
 
 	def getScores(self, limit = 10):
-		conn = sqlite3.connect("/home/aloeee/progTest/python/ctris/scores.db")
+		conn = sqlite3.connect("scores.db")
 		cursor = conn.cursor()
 		cursor.execute("CREATE TABLE IF NOT EXISTS SCORES (ID INTEGER PRIMARY KEY, DATETIME TEXT, LINES INTEGER, BLOCKS INTEGER)")
 
