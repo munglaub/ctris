@@ -10,6 +10,7 @@ from pe import PE
 from pf import PF
 from pg import PG
 from status import Status
+from target import Target
 
 class Game:
 	def __init__(self, screen):
@@ -25,6 +26,8 @@ class Game:
 		self.current = self.createNext()
 		self.pieces = []
 		self.status = Status(self.width + 2, 0)
+		self.target = Target(self.width - 2, 0, self.height)
+		self.target.current = self.current
 		self.status.nextBlock = self.next
 		self.field.clear()
 		self.field.box()
@@ -38,6 +41,7 @@ class Game:
 		else:
 			self.pieces += self.current.pieces
 			self.current = self.next
+			self.target.current = self.current
 			self.next = self.createNext()
 			self.status.nextBlock = self.next
 			self.status.blocks += 1
@@ -73,6 +77,7 @@ class Game:
 				self.field.addstr(p.y, p.x, "  ", curses.A_REVERSE)
 		self.field.refresh()
 		self.status.paint()
+		self.target.paint()
 
 	def getLines(self):
 		return self.status.lines
