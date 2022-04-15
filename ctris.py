@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import curses
 import threading
@@ -40,7 +40,6 @@ def init_curses():
 	return stdscr
 
 
-
 stdscr = init_curses()
 # 0 - initial mode - game not started
 # 1 - game running
@@ -57,10 +56,6 @@ updateThread = threading.Thread(target=update, args=(game,))
 updateThread.daemon = True
 updateThread.start()
 
-
-
-
-
 while True:
 	c = stdscr.getch()
 	if c == ord("q"):
@@ -68,16 +63,16 @@ while True:
 	elif c == ord("s"):
 		game.initialize()
 		mode = 1
-	elif mode == 1 and c == curses.KEY_LEFT:
+	elif mode == 1 and (c == curses.KEY_LEFT or c == ord("j")):
 		game.tryMoveLeft()
 		game.paint()
-	elif mode == 1 and c == curses.KEY_RIGHT:
+	elif mode == 1 and (c == curses.KEY_RIGHT or c == ord("l")):
 		game.tryMoveRight()
 		game.paint()
-	elif mode == 1 and c == curses.KEY_DOWN:
+	elif mode == 1 and (c == curses.KEY_DOWN or c == ord("k")):
 		game.tryMoveDown()
 		game.paint()
-	elif mode == 1 and c == curses.KEY_UP:
+	elif mode == 1 and (c == curses.KEY_UP or c == ord("i")):
 		game.tryTurn()
 		game.paint()
 	elif mode == 1 and c == ord(" "):
@@ -98,4 +93,5 @@ stdscr.keypad(0)
 curses.curs_set(1)
 curses.echo()
 curses.endwin()
+
 
